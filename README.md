@@ -1,12 +1,15 @@
 hnjavaclient
 ============
 A Hacker News Java Client Library (currently read-only)
+
 This project is under active development.
 
 Usage
 -----
 
 ```java
+// Create the client object
+HNClient hn = new HNClient();
 // Retrieve the homepage news
 ArrayList<NewsItem> newsList = hn.getNewsIndex();
 
