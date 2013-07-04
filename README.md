@@ -6,6 +6,7 @@ This project is under active development.
 Usage
 -----
 
+```java
 // Retrieve the homepage news
 ArrayList<NewsItem> newsList = hn.getNewsIndex();
 
@@ -16,7 +17,7 @@ ArrayList<NewsItem> newsList = hn.getNewest();
 ArrayList<NewsItem> newsList = hn.getAsk();
 ```
 
-### Retrieve the next page
+#### Retrieve the next page
 ```java
 // Retrieve a page, as usual
 HNClient hn = new HNClient();
