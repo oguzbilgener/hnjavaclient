@@ -87,12 +87,6 @@ public class Comments
 					
 					// Finally, add our comment to the single depth comments list
 					commentsList.add(comment);
-					
-					// Now,
-					for(int c=1; c<commentsList.size(); c++)
-					{
-						//if(flatCommentsList.get(c).getDepth()!=0)
-					}
 				}
 				catch(Exception ec)
 				{
@@ -101,9 +95,6 @@ public class Comments
 					continue;
 				}
 			}
-			
-			// Now we have a comments list with single depth.
-			// It's time to create a hierarchy
 		}
 		catch(Exception e)
 		{
