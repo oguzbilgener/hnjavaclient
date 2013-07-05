@@ -13,6 +13,8 @@ public class HNClient
 	{
 		
 	}
+	
+	// Homepage Stuff
 	public ArrayList<NewsItem> getNewsIndex() throws IOException, BadStatusException
 	{
 		// parse homepage
@@ -53,5 +55,14 @@ public class HNClient
 	public String getNextLink()
 	{
 		return nextLink;
+	}
+	
+	// Comments Stuff
+	public ArrayList<CommentItem> getComments(String itemLink) throws IOException, BadStatusException
+	{
+		Comments comments = new Comments(itemLink);
+		comments.download();
+		comments.parse();
+		return comments.getComments();
 	}
 }
