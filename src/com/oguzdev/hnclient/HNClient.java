@@ -35,7 +35,7 @@ public class HNClient
 	}
 	public ArrayList<NewsItem> getNewest() throws IOException, BadStatusException
 	{
-		// parse homepage
+		// parse newest
 		News news = new News(Urls.newPage);
 		news.download();
 		news.parse();
@@ -44,7 +44,7 @@ public class HNClient
 	}
 	public ArrayList<NewsItem> getAsk() throws IOException, BadStatusException
 	{
-		// parse homepage
+		// parse ask hn
 		News news = new News(Urls.askPage);
 		news.download();
 		news.parse();
