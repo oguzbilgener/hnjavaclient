@@ -9,6 +9,12 @@ public class CommentItem
 	private String commentTime;
 	private String commentLink;
 	
+	public CommentItem()
+	{
+		depth = 0;
+		username = commentText = commentTime = commentLink = "";
+	}
+	
 	public String toString()
 	{
 		return "["+depth+"] "+username+" ("+commentTime+")\n"+commentText+"\n"+commentLink+"\n";
