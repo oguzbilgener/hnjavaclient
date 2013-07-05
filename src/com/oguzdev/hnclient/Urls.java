@@ -4,6 +4,7 @@ public class Urls
 {
 	// Hardcoded URLs of news.ycombinator.com
 	public static String homePage = "http://news.ycombinator.com/";
+	public static String homePageNoSlash = "http://news.ycombinator.com";
 	public static String trendingPage = "http://news.ycombinator.com/news";
 	public static String morePage = "http://news.ycombinator.com/x?fnid=";
 	public static String newPage = "http://news.ycombinator.com/newest";
