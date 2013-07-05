@@ -50,5 +50,9 @@ String url = "https://news.ycombinator.com/item?id=5987780";
 ArrayList<CommentItem> commentsList = hn.getComments(url);
 ```
 
+#### Warning
+Always access the methods above from a thread or and async task. Downloading, parsing are time consuming tasks.
+Also, you are going to need to surround them with a try/catch block. It is possible that the API throws IOException or BadStatusException.
+
 More features are on the way...
 
