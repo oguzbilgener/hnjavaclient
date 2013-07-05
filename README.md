@@ -4,20 +4,24 @@ A Hacker News Java Client Library (currently read-only)
 
 This project is under active development.
 
-Usage
------
+### Basic Features
+- Retrieve news from trending/newest/ask
+- Retrieve comments of an item
+
+
+###Usage
 
 ```java
 // Create the client object
 HNClient hn = new HNClient();
 // Retrieve the homepage news
-ArrayList<NewsItem> newsList = hn.getNewsIndex();
+ArrayList<NewsItem> indexList = hn.getNewsIndex();
 
 // Retrieve the newest
-ArrayList<NewsItem> newsList = hn.getNewest();
+ArrayList<NewsItem> newestList = hn.getNewest();
 
 // Retrieve the ask hn
-ArrayList<NewsItem> newsList = hn.getAsk();
+ArrayList<NewsItem> askList = hn.getAsk();
 ```
 
 #### Retrieve the next page
@@ -34,10 +38,17 @@ if(next != null)
 	// then comine two ArrayLists into one
 	newsList.addAll(nextList);
 }
+```
 
+#### Retrieve comments of an item
+```java
+// Create the client object
+HNClient hn = new HNClient();
+// Get the comments page link from somewhere
+String url = "https://news.ycombinator.com/item?id=5987780";
+// Retrieve the comments
+ArrayList<CommentItem> commentsList = hn.getComments(url);
 ```
 
 More features are on the way...
-
-=======
 
