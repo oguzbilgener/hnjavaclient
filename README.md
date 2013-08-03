@@ -2,8 +2,6 @@ hnjavaclient
 ============
 A Hacker News Java Client Library (currently read-only)
 
-This project is under active development.
-
 ### Basic Features
 - Retrieve news from trending/newest/ask
 - Retrieve comments of an item
@@ -48,11 +46,10 @@ HNClient hn = new HNClient();
 String url = "https://news.ycombinator.com/item?id=5987780";
 // Retrieve the comments
 ArrayList<CommentItem> commentsList = hn.getComments(url);
+// Get the Original Post
+NewsItem op = hn.getOriginalPostForComment();
 ```
 
 #### Warning
-Always access the methods above from a thread or and async task. Downloading, parsing are time consuming tasks.
-Also, you are going to need to surround them with a try/catch block. It is possible that the API throws IOException or BadStatusException.
-
-More features are on the way...
+Always access the methods above from a background thread. Also, surround your code with a try/catch block, in case of an IOException.
 
