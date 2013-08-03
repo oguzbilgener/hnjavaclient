@@ -1,7 +1,13 @@
 package com.oguzdev.hnclient;
 
-public class NewsItem 
+import java.io.Serializable;
+
+public class NewsItem implements Serializable 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8382843960451352970L;
 	private String itemId;
 	private String title;
 	private String externalUrl;
@@ -10,15 +16,16 @@ public class NewsItem
 	private String username;
 	private String timeText;
 	private String commentsText;
+	private String bodyText;
 	
 	public NewsItem()
 	{
-		itemId= title = externalUrl = domain = pointsText = username = timeText = commentsText = "";
+		itemId = title = externalUrl = domain = pointsText = username = timeText = commentsText = bodyText = "";
 	}
 	
 	public String toString()
 	{
-		return itemId+" | "+title+" \n"+externalUrl+" \n" + timeText + "by "+username+" ["+pointsText+"|"+commentsText+"]";
+		return itemId+" | "+title+" \n"+ bodyText+"  \n"+externalUrl+" \n" + timeText + "by "+username+" ["+pointsText+"|"+commentsText+"]";
 	}
 	
 	public void setItemId(String i)
@@ -49,6 +56,10 @@ public class NewsItem
 	}
 	public void setTime(String t)
 	{
+		if(t.endsWith(" |"))
+			t = t.substring(0,t.length()-2);
+		if(t.startsWith("by"))
+			t = t.substring(3);
 		timeText = t;
 	}
 	public void setComments(String c)
@@ -56,6 +67,10 @@ public class NewsItem
 		if(c.equals("discuss"))
 			c = "0 comments";
 		commentsText = c;
+	}
+	public void setBodyText(String b)
+	{
+		bodyText = b;
 	}
 	
 	public String getItemId()
@@ -89,6 +104,17 @@ public class NewsItem
 	public String getComments()
 	{
 		return commentsText;
+	}
+	public String getBodyText()
+	{
+		return bodyText;
+	}
+
+	public boolean hasAnExternalUrl()
+	{
+		if(externalUrl.startsWith(Urls.homePage))
+			return false;
+		return true;
 	}
 	
 }

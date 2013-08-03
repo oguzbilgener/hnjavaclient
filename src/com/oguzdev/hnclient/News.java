@@ -1,14 +1,12 @@
 package com.oguzdev.hnclient;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.oguzdev.hnclient.utils.BadStatusException;
+import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class News 
@@ -16,9 +14,11 @@ public class News
 	private String newsUrl;
 	private ArrayList<NewsItem> newsList;
 	
-	private String pageContent;
-	
 	public String fnLink = "";
+
+    public static int TIMEOUT_SECONDS = 30;
+
+    private boolean isExpired = false;
 	
 	public News()
 	{
@@ -29,18 +29,23 @@ public class News
 		newsUrl = url;
 	}
 	
-	public void download() throws IOException, BadStatusException
-	{
-		pageContent = Http.downloadPage(newsUrl);
-	}
-	
 	/*
 	 * Try to iterate in horrible YCombinator HTML table structure and parse it.
 	 */
-	public void parse()
+	public void parse() throws IOException
 	{
+		long firsttime = System.currentTimeMillis();
 		newsList = new ArrayList<NewsItem>();
-		Document doc = Jsoup.parse(pageContent);
+		Document doc = Jsoup.connect(newsUrl).timeout(30*1000).get();
+        // Check if the link is expired
+        if(doc.html().equals("Unknown or expired link."))
+        {
+            // if true, stop parsing.
+            isExpired = true;
+            return;
+        }
+		long secondtime = System.currentTimeMillis();
+
 		Elements tables = doc.getElementsByTag("table");
 		// Our table is the third table in the document. if it does not exist, there's nothing to parse. exit.
 		if(tables.size()<3)
@@ -63,9 +68,11 @@ public class News
 					continue;
 				
 				// find table cells that we need
-				Element td1 = row1.getElementsByTag("td").get(1);
-				Element td2 = row1.getElementsByTag("td").get(2);
-				Element td4 = row2.getElementsByTag("td").get(1);
+                Elements tds1 = row1.getElementsByTag("td");
+                Elements tds2 = row2.getElementsByTag("td");
+				Element td1 = tds1.get(1);
+				Element td2 = tds1.get(2);
+				Element td4 = tds2.get(1);
 				
 				Element aVote = null;
 				// find the link of the item
@@ -74,28 +81,37 @@ public class News
 				item.setTitle(aLink.text());
 				item.setExternalUrl(aLink.attr("href"));
 				// sometimes there is an extra empty <td>.
-				if(td1.html() == "")
+				if(td1.html().equals(""))
 				{
 					// and this kind of items do not include vote link
-					td1 = row1.getElementsByTag("td").get(2);
-					td2 = row1.getElementsByTag("td").get(3);
+					td1 = tds1.get(2);
+					td2 = tds2.get(1);
+
+                    // Get the itemId from the a element
+                    item.setItemId(aLink.attr("href").substring(8));
 				}
 				else
 				{
-					// if there is no empty <td>, get the vote link
+					// If there is no empty <td>, get the vote link
 					aVote = td1.getElementsByTag("a").first();
-					// now set the item id for vote
+					// Get the itemId from vote link this time
 					if(aVote != null)
 						item.setItemId(aVote.id().substring(3));
 				}
 				
 				// get the domain name
 				Elements comheads = td2.getElementsByClass("comhead");
-				// if exists, of course
+
+                // TODO: test this:
+                if(comheads.size()==0)
+                    // Not found? try another one. Hacker news can be tricky.
+                    comheads = tds1.get(2).getElementsByClass("comhead");
+
+				// If exists, get the domain
 				if(comheads.size()>0)
 				{
 					Element comhead = comheads.first();
-					item.setDomain(comhead.text().replaceAll("\\s",""));
+					item.setDomain(comhead.text().replaceAll("\\s","").replaceAll("[\\(\\)]",""));
 				}
 				
 				// Now get the points of the item
@@ -147,6 +163,9 @@ public class News
 				fnLink = Urls.homePage + fnLink.substring(1);
 			else
 				fnLink = Urls.homePage + fnLink;
+		
+		long thirdtime = System.currentTimeMillis();
+
 		return;
 	}
 	
@@ -159,5 +178,10 @@ public class News
 	{
 		return fnLink;
 	}
+
+    public boolean isExpired()
+    {
+        return isExpired;
+    }
 
 }

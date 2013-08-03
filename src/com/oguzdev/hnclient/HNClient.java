@@ -3,50 +3,52 @@ package com.oguzdev.hnclient;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.oguzdev.hnclient.utils.BadStatusException;
-
-
 public class HNClient 
 {
 	private String nextLink;
+    private NewsItem commentOriginalPost;
+    private boolean isExpired = false;
+
 	public HNClient()
 	{
 		
 	}
 	
 	// Homepage Stuff
-	public ArrayList<NewsItem> getNewsIndex() throws IOException, BadStatusException
+	public ArrayList<NewsItem> getNewsIndex() throws IOException
 	{
-		// parse homepage
+		// Parse homepage
 		News news = new News();
-		news.download();
 		news.parse();
 		nextLink = news.getNext();
 		return news.getNewsList();
 	}
-	public ArrayList<NewsItem> getNewsPage(String fnLink) throws IOException, BadStatusException
+	public ArrayList<NewsItem> getNewsPage(String fnLink) throws IOException
 	{
-		// parse some news page
+		// Parse some news page
 		News news = new News(fnLink);
-		news.download();
 		news.parse();
+        // The fnLink might be expired. Check it.
+        if(news.isExpired())
+        {
+            isExpired = true;
+            return null;
+        }
 		nextLink = news.getNext();
 		return news.getNewsList();
 	}
-	public ArrayList<NewsItem> getNewest() throws IOException, BadStatusException
+	public ArrayList<NewsItem> getNewest() throws IOException
 	{
-		// parse newest
+		// Parse newest
 		News news = new News(Urls.newPage);
-		news.download();
 		news.parse();
 		nextLink = news.getNext();
 		return news.getNewsList();
 	}
-	public ArrayList<NewsItem> getAsk() throws IOException, BadStatusException
+	public ArrayList<NewsItem> getAsk() throws IOException
 	{
-		// parse ask hn
+		// Parse ask hn
 		News news = new News(Urls.askPage);
-		news.download();
 		news.parse();
 		nextLink = news.getNext();
 		return news.getNewsList();
@@ -58,11 +60,21 @@ public class HNClient
 	}
 	
 	// Comments Stuff
-	public ArrayList<CommentItem> getComments(String itemLink) throws IOException, BadStatusException
+	public ArrayList<CommentItem> getComments(String itemLink) throws IOException
 	{
 		Comments comments = new Comments(itemLink);
-		comments.download();
 		comments.parse();
+        commentOriginalPost = comments.getOriginalPost();
 		return comments.getComments();
 	}
+    public NewsItem getOriginalPostForComment()
+    {
+        return commentOriginalPost;
+    }
+
+    public boolean isExpired()
+    {
+        return isExpired;
+    }
+
 }
